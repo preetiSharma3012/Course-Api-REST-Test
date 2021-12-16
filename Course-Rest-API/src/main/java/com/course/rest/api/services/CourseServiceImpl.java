@@ -1,71 +1,50 @@
 package com.course.rest.api.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.course.rest.api.dao.CourseDaoRepo;
 import com.course.rest.api.entity.Course;
 
 @Service
 public class CourseServiceImpl implements CourseService {
 
-	List<Course> list;
+	@Autowired
+	private CourseDaoRepo CourseDaoRepoObj; 
 	
 	public CourseServiceImpl() {
-	list=new ArrayList<>();
-	list.add(new Course(100,"Core Java","This is core java course"));
-	list.add(new Course(101,"Spring Boot","This is core Spring Boot"));
-	list.add(new Course(102,"Java Script","This is core Java Script"));
 	}
 	
 	@Override
 	public List<Course> getCourses() {
 		
-		return list;
+		return CourseDaoRepoObj.findAll();
 	}
 
 	@Override
 	public Course getcoursebyId(long courseId) {
 		
-		Course c = null;
-		
-		for(Course course:list)
-		{
-			if(course.getId()== courseId)
-			{
-				c=course;
-				break;			
-				
-			}
-		}
-		return c;
+		return CourseDaoRepoObj.getById(courseId);
 	}
 
 	@Override
 	public Course addcourse(Course course) 
 	{
-		list.add(course);
+		CourseDaoRepoObj.save(course);
 		
 		return course;
 		
 	}
 
 	@Override
-	public Course deletecoursebyId(long courseId) {
+	public void deletecoursebyId(long courseId) {
 		
-		Course c =null;
+		//@SuppressWarnings("deprecation")
+		Course entity = CourseDaoRepoObj.getOne(courseId);
+		CourseDaoRepoObj.delete(entity);
 		
-		for(Course course : list)
-		{
-			if(course.getId() == courseId)
-			{
-				list.remove(course);
-				break;
-			}
-		}
-		
-		return c;
 	}
 	
 	
